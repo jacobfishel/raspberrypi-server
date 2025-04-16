@@ -6,11 +6,18 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include "functions.h"
 
-#define port 1234
 #define LISTEN_BACKLOG 10
+#define BUFFER_SIZE 1024
 
-int main() {
+
+
+int main(int argc, char* argv[]) {
+
+    struct Config config = parse_args(argc, argv);
+    int port = config.port;
+    int print = config.verbose;
 
     // Initialize the socket
     int socket_fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -35,25 +42,47 @@ int main() {
     
     if (returnval < 0) {
         perror("bind");
+        close(socket_fd);
         return 1;
     }
+    printf("Successfully binded to port %d\n", port);
+
 
         //listn in the socket for some love up to 10 
     returnval = listen(socket_fd, LISTEN_BACKLOG);
 
-    // Respond when someone connects
-    struct sockaddr_in client_address;
-    socklen_t client_address_len = sizeof(client_address);
+    if (returnval < 0) {
+        perror("listen");
+        close(socket_fd);
+        return 1;
+    }
+
+    printf("Server listening on port: %d\n", port);
+    
 
     while (1) {
-        pthread_t thread;
-        int* client_fd_buf = malloc(sizeof(int));
 
-        *client_fd_buf = accept(
-            socket_fd, (struct sockaddr*)&client_address, &client_address_len);
+    // Respond when someone connects
+    struct sockaddr_in client_address;  //create a place to hold clientes address
+    socklen_t client_address_len = sizeof(client_address);  ////create a place to hold length of the addr
 
-        printf("Accepted connection on %d\n", *client_fd_buf);
+    int connection_fd = accept(
+            socket_fd, (struct sockaddr*)&client_address, &client_address_len);  //accept by linking the incoming request to the fd and client variables
+
+    if (connection_fd < 0) {
+        perror("accept");
+        continue;
     }
+
+    printf("Accepted a client\n");
+    handleConnection(connection_fd, BUFFER_SIZE, print);
+    printf("Client disconnected.\n");
+    close(connection_fd);
+
+    }   
+    close(socket_fd);
+
+
 
     return 0;
 }
