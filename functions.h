@@ -6,8 +6,14 @@ struct Config {
   int verbose;
 };
 
+struct ThreadArgs {
+  int client_fd;
+  int buffer_size;
+  int print;
+};
+
 struct Config parse_args(int argc, char* argv[]);
-void handleConnection(int a_client, int BUFFER_SIZE, int print);
+void* handleConnection(void* arg);
 
 
 #endif

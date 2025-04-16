@@ -27,10 +27,13 @@ struct Config parse_args(int argc, char* argv[]) {
 }
 
 // Reads from a client and writes back depending on print parameter (true or false)
-void handleConnection(int client_fd, int BUFFER_SIZE, int print) {
+void* handleConnection(void* arg) {
+  struct ThreadArgs* args = (struct ThreadArgs*)arg;
 
   int returnval;
-  char buffer[BUFFER_SIZE];
+  char buffer[args->buffer_size];
+  int client_fd = args->client_fd;
+  int print = args->print;
 
   write(client_fd, "Hello from server!\n", 19);
 
@@ -47,4 +50,9 @@ void handleConnection(int client_fd, int BUFFER_SIZE, int print) {
         perror("write");
       }
   }
-}
+  printf("Client disconnected on fd %d\n", client_fd);
+  close(client_fd);
+  free(arg);
+
+    return NULL;
+} 

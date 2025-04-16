@@ -61,28 +61,33 @@ int main(int argc, char* argv[]) {
     
 
     while (1) {
+        pthread_t thread;
+        int* client_fd_buf = malloc(sizeof(int));
 
-    // Respond when someone connects
-    struct sockaddr_in client_address;  //create a place to hold clientes address
-    socklen_t client_address_len = sizeof(client_address);  ////create a place to hold length of the addr
+        // Respond when someone connects
+        struct sockaddr_in client_address;  //create a place to hold clientes address
+        socklen_t client_address_len = sizeof(client_address);  ////create a place to hold length of the addr
 
-    int connection_fd = accept(
-            socket_fd, (struct sockaddr*)&client_address, &client_address_len);  //accept by linking the incoming request to the fd and client variables
+        *client_fd_buf = accept(
+                socket_fd, (struct sockaddr*)&client_address, &client_address_len);  //accept by linking the incoming request to the fd and client variables
 
-    if (connection_fd < 0) {
-        perror("accept");
-        continue;
-    }
+        if (*client_fd_buf < 0) {
+            perror("accept");
+            continue;
+        }
 
-    printf("Accepted a client\n");
-    handleConnection(connection_fd, BUFFER_SIZE, print);
-    printf("Client disconnected.\n");
-    close(connection_fd);
+        struct ThreadArgs* args = malloc(sizeof(struct ThreadArgs));
+        args->client_fd = *client_fd_buf;
+        args->buffer_size = BUFFER_SIZE;
+        args->print = print;
+
+        printf("Accepted a connection on %d\n", *client_fd_buf);
+        pthread_create(&thread, NULL, (void* (*)(void*))handleConnection,
+                (void*)args);
+        pthread_detach(thread);
 
     }   
     close(socket_fd);
-
-
 
     return 0;
 }
