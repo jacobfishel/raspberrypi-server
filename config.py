@@ -1,0 +1,1 @@
+# Learning rate, batch size, num epochs, image size, etc
