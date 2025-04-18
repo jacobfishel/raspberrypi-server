@@ -47,5 +47,23 @@ Make the raspberry pi the database. Do some object detection which will be the m
 
 
 
+ACTIVE TODO:
+    - parse_wider.py: write the function to make sure we have the right number of images and bboxes for each
+    - Research what comes next. Probably building the model, or formatting the data more.
+
+Progress:
+    4.16.2025
+        - planned out the strucure of the project
+        - Created the file structure
+        - Downloaded the dataset
+        - Got the echo server running 
+            - (will be modified and implemented later. This was mostly for practice)
+    
+    4.17.2025
+        - Wrote the parse function for the annotation file
+        - Did a lot of research on the way the annotation file should be formatted
+            - tuple containing image file path and 2d array of bbox coords ("", [[]])
+
+
 
 
