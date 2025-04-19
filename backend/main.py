@@ -8,7 +8,7 @@
 
 import socket
 import threading
-from functions import handle_connection
+from backend.functions import handle_connection
 
 # Define the server address and port
 HOST = '127.0.0.1'

@@ -1,8 +1,13 @@
 # File to parse the wider dataset into the proper format to train data
+import json
+import tests.parse_wider_test as test
 
-# --------------- CODE ------------- #
+
+# ---------------- CODE -------------- #
 # open the annotations file and modify data 
 train_annotations_path = 'data/WIDER/annotations/wider_face_train_bbx_gt.txt'
+parsed_train_annotations_path = 'data/WIDER/annotations/parsed_wider_face_train_bbx_gt.json'
+
 train_images_folder_path = 'data/WIDER/WIDER_train/images/'
 final_data_arr = []
 
@@ -25,18 +30,32 @@ with open(train_annotations_path, 'r') as f:
       if img_path is not None:
         #Delete the num of bboxes from the coords (useless)
         del(bbox_coords[0])
-        final_data_arr.append((img_path, bbox_coords))
+        final_data_arr.append({"filename": img_path, "bboxes": bbox_coords})  #updated dict storage
+        # final_data_arr.append((img_path, bbox_coords))  #old dat storage
         bbox_coords = []
 
       img_path = train_images_folder_path + line.strip()
 
   #Once we reach the end, push the final pieces of data
   del(bbox_coords[0])
-  final_data_arr.append((img_path, bbox_coords))
+  final_data_arr.append({"filename": img_path, "bboxes": bbox_coords})
+
+  # TEST FUNCTION LINE TO TEST PARSE
+  # print(f"Testing each line in data = {test.test_data_in_file(data, final_data_arr)}")      
+
+with open(parsed_train_annotations_path, 'w') as f:
+  json.dump(final_data_arr, f, indent=2)
+
+# TEST FUNCTION LINE TO TEST PARSE
+# print(test.test_num_of_images(train_annotations_path, final_data_arr))
+
+for i in range(15):
+  print(final_data_arr[i])
 
 
-print(final_data_arr[-1])
+    
 
-#Function to test that the number of images match in the array and in the file and making sure all the file paths have a correct file path
-# def test_num_of_images():
-#   pass
+
+
+  
+

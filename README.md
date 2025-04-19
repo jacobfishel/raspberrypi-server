@@ -48,7 +48,18 @@ Make the raspberry pi the database. Do some object detection which will be the m
 
 
 ACTIVE TODO:
-    - parse_wider.py: write the function to make sure we have the right number of images and bboxes for each
+    - parse_wider.py: maybe just clean up the code a little bit
+    - Build the training pipeline:
+        - write a dataset class 
+        - load annotations
+        - apply transformations
+        - write model
+        - train model
+        - save model
+    - Test model
+    - Loop back if errors
+    - Then flask backent routes to serve the model
+    - Frontend to call routes and display detection
     - Research what comes next. Probably building the model, or formatting the data more.
 
 Progress:
@@ -63,6 +74,9 @@ Progress:
         - Wrote the parse function for the annotation file
         - Did a lot of research on the way the annotation file should be formatted
             - tuple containing image file path and 2d array of bbox coords ("", [[]])
+
+    4.18.2025
+        - Finished testing the parse file function. It contains the correct numbers of jpg filenames and when I loop through all bounding boxes, they are in the file, so I'm content with this check. 
 
 
 
